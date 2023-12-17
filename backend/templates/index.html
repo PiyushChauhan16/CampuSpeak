@@ -1,0 +1,149 @@
+{% extends "sidebar.html" %}
+
+{% block content %}
+<div>      
+    <div>
+        {% for item in data %}
+            <div class = "all-posts">
+                <div><b>{{item.branch}}</b> <br><span class = "batch">BATCH {{item.batch}} </br></span></div>
+                <div class = "content">{{item.postContent}}</div>
+                <div class="content">{{item.categorizeContent}}</div>
+                <div ><a href="{% url 'fullPost' %}?pid={{item.pid}}&uid={{uid}}&branch={{item.branch}}&batch={{item.batch}}">Comment</a></div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+
+
+const postContentBtnRef = document.querySelector (".post-content");
+const sideBarRef = document.querySelector (".sidebar");
+const validPin = JSON.parse('{{ authPin|safe }}');
+let isSecure = '{{isEnable}}';
+const authPinBtnRef = document.querySelector ("#auth-pin-btn");
+
+console.log ("in")
+console.log (authPinBtnRef)
+
+if (isSecure === 1 || isSecure === "1") {
+    authPinBtnRef.innerHTML = `<span class="text">SECURE</span><span class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" 
+        height="24" viewBox="0 -960 960 960" width="24">
+        <path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z"/></svg>
+</span>`;
+
+    authPinBtnRef.className = "auth-pin-btn-secure";
+}
+else {
+    authPinBtnRef.innerHTML = `<span class="text">INSECURE</span><span class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" 
+        height="24" viewBox="0 -960 960 960" width="24">
+        <path d="M240-640h360v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85h-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640Zm0 480h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM240-160v-400 400Z" /></svg>
+</span>`;
+
+    authPinBtnRef.className = "auth-pin-btn-insecure";
+}
+
+console.log (isSecure);
+
+authPinBtnRef.addEventListener ("click", ()=>{
+    if (isSecure === 1 || isSecure === "1"){
+        console.log ("making it insecure")
+        authPinBtnRef.innerHTML = `<span class="text">INSECURE</span><span class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" 
+        height="24" viewBox="0 -960 960 960" width="24">
+        <path d="M240-640h360v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85h-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640Zm0 480h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM240-160v-400 400Z" /></svg>
+</span>`;
+
+    authPinBtnRef.className = "auth-pin-btn-insecure";
+        window.location.href = '{%url "index" %}?isEnable=0'
+
+    }
+    else{
+        console.log ("making it secure")
+        authPinBtnRef.innerHTML = `<span class="text">SECURE</span><span class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" 
+        height="24" viewBox="0 -960 960 960" width="24">
+        <path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z"/></svg>
+</span>`;
+
+    authPinBtnRef.className = "auth-pin-btn-secure";
+        window.location.href = '{%url "index" %}?isEnable=1'
+        
+    }
+})
+
+
+
+postContentBtnRef.addEventListener ("click", ()=>{
+
+    console.log (sideBarRef.children)
+    childrenLength = sideBarRef.children.length;
+
+    if (childrenLength == 1){
+        var createPost = document.createElement ("div");
+        createPost.className = "create-post"
+        createPost.innerHTML = 
+        `
+        <button class = "cancel-btn">CANCEL</button>
+        <form action="/index/" method="POST" class = "form-div">
+        {% csrf_token %}
+        <label for="postContent"> Write your post</label>
+        <textarea name="postContent" id="post" style="height: 100px;"></textarea>
+        <input type="text" class = "auth-input" />
+        <div class = "msg"></div>
+        <button class="post-btn">Post</button>
+        </form>`
+        sideBarRef.appendChild (createPost);
+
+        
+        const authInputRef = document.querySelector (".auth-input");
+        const postBtnRef = document.querySelector (".post-btn");
+        const cancelBtnRef = document.querySelector (".cancel-btn")
+        const createPostRef = document.querySelector (".create-post")
+
+        cancelBtnRef.addEventListener ("click", ()=>{
+            sideBarRef.removeChild (createPostRef)
+        })
+
+        if (isSecure === 0 || isSecure === "0"){
+            authInputRef.classList.add ("hidden");
+            postBtnRef.disabled = false;
+            document.querySelector (".msg").innerHTML = "";
+            authInputRef.value = "";
+        }
+        else{
+            authInputRef.classList.remove ("hidden")
+            postBtnRef.disabled = true;
+        }
+
+        
+        authInputRef.addEventListener ("input", (e)=>{
+            console.log (typeof e.target.value,typeof validPin);
+            console.log (e.target.value === validPin);
+
+            if (Number(e.target.value) !== (validPin)){
+                document.querySelector (".msg").innerHTML = "Incorrect Password";
+                postBtnRef.disabled = true;
+            }
+            else {
+                document.querySelector (".msg").innerHTML = "Correct Password";
+                postBtnRef.disabled = false;
+            }
+            
+        });
+    }
+    
+})
+
+</script>
+
+
+
+
+
+{% endblock %}

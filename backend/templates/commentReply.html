@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>commentReply</div>
+    <div>{{commentContent}}</div>
+    <textarea name="commentBox" id="comment-box" cols="30" rows="10"></textarea>
+    <button class="add-comment-btn">add comment</button>
+
+    {% for reply in replyData  %}
+      <div><i>{{reply.branch}} {{reply.batch}}</i></div>
+      <div>{{reply.replyContent}}</div>
+      <a href="{% url 'commentReply' %}?pid={{pid}}&uid={{uid}}&cid={{reply.commentReplyId}}">Reply</a>
+    {% endfor %}
+
+</body>
+<script>
+    commentBoxRef = document.querySelector ("#comment-box");
+    addCommentBtnRef = document.querySelector (".add-comment-btn");
+    commentContent = "";
+
+    commentBoxRef.addEventListener ("input", (e)=>{
+        commentContent = e.target.value;
+    })
+
+    
+    addCommentBtnRef.addEventListener ("click", ()=>{
+        console.log (commentContent)
+        console.log ("click");
+        window.location.href = `{% url "commentReply" %}?pid={{pid}}&uid={{uid}}&cid={{cid}}&replyContent=${commentContent}`
+    })
+</script>
+</html>

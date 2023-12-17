@@ -1,0 +1,59 @@
+{% extends "sidebar.html" %}
+
+{% block content %}
+    <div>
+        <div class="all-posts">
+            <div><b>{{branch}}</b> <br><span class = "batch">BATCH {{batch}} </br></span></div>
+            <div class="content">{{postContent}}</div>
+            <textarea name="commentBox" id="comment-box" class = "comment-box" cols="30" rows="10" placeholder="Post your reply"></textarea>
+            <div class="add-comment-btn-div">
+                <button class = "add-comment-btn">
+                <div class="svg-wrapper-1">
+                        <div class="svg-wrapper">
+                        <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z" fill="currentColor"></path>
+                        </svg>
+                        </div>
+                    </div>
+                    <span>Send</span>
+                </button>
+            </div>
+
+            
+        </div>    
+        
+        {% for comment in commentData  %}
+            <div class = "all-posts">
+                <div><b>{{comment.branch}}</b> <br><span class = "batch">BATCH {{comment.batch}}</span></br> </div>
+                <div class="content">{{comment.commentContent}}</div>
+                <a href="{% url 'commentReply' %}?pid={{pid}}&uid={{uid}}&cid={{comment.cid}}">Reply</a>
+            </div>
+            
+        {% endfor %}
+    </div>
+    
+
+{% endblock content %}
+
+
+{% block script %}
+    <script>
+        commentBoxRef = document.querySelector ("#comment-box");
+        addCommentBtnRef = document.querySelector (".add-comment-btn");
+        commentContent = "";
+
+        commentBoxRef.addEventListener ("input", (e)=>{
+            commentContent = e.target.value;
+        })
+
+
+        addCommentBtnRef.addEventListener ("click", ()=>{
+            console.log (commentContent)
+            console.log ("click");
+            window.location.href = `{% url "fullPost" %}?pid={{pid}}&uid={{uid}}&commentContent=${commentContent}`
+        })
+
+
+    </script>
+{% endblock %}

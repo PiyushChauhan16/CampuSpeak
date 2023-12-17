@@ -1,23 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <div>commentReply</div>
-    <div>{{commentContent}}</div>
-    <textarea name="commentBox" id="comment-box" cols="30" rows="10"></textarea>
-    <button class="add-comment-btn">add comment</button>
+{% extends "sidebar.html" %}
 
+
+
+{% block content %}
+    <div class = "div-heading">Replies</div>
+
+    <div class="all-posts">
+        <div><b>{{branch}}</b> <br><span class = "batch">BATCH {{batch}} </br></span></div>        
+        <div class = "content">{{commentContent}}</div>
+        <textarea name="commentBox" id="comment-box" class = "comment-box" cols="30" rows="10" placeholder="Post your reply"></textarea>
+            <div class="add-comment-btn-div">
+            <button class = "add-comment-btn">
+            <div class="svg-wrapper-1">
+                    <div class="svg-wrapper">
+                    <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z" fill="currentColor"></path>
+                    </svg>
+                    </div>
+                </div>
+                <span>Send</span>
+            </button>
+        </div>
+    </div>
+    
     {% for reply in replyData  %}
-      <div><i>{{reply.branch}} {{reply.batch}}</i></div>
-      <div>{{reply.replyContent}}</div>
-      <a href="{% url 'commentReply' %}?pid={{pid}}&uid={{uid}}&cid={{reply.commentReplyId}}">Reply</a>
+        <div class="all-posts">
+            <div><b>{{reply.branch}}</b> <br><span class = "batch">BATCH {{reply.batch}}</span></br> </div>
+            <div class="content">{{reply.replyContent}}</div>
+            <a href="{% url 'commentReply' %}?pid={{pid}}&uid={{uid}}&cid={{reply.commentReplyId}}">Reply</a>
+        </div>
+        
     {% endfor %}
+{% endblock content %}
 
-</body>
+
+{% block script %}
+  
+
+
 <script>
     commentBoxRef = document.querySelector ("#comment-box");
     addCommentBtnRef = document.querySelector (".add-comment-btn");
@@ -34,4 +55,7 @@
         window.location.href = `{% url "commentReply" %}?pid={{pid}}&uid={{uid}}&cid={{cid}}&replyContent=${commentContent}`
     })
 </script>
+{% endblock script %}
+
+
 </html>

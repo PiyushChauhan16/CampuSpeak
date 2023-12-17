@@ -12,19 +12,6 @@ def index(request):
     # print (args[0])
 
     vectoriser, LRmodel = load_models()
-    print ("models loaded")
-    # Text to classify should be in a list.
-    text = ["I hate twitter",
-            "May the Force be with you.",
-            "Mr. Stark, I don't feel so good",
-            "Today was a great day for me. I got placed at TRC",
-            "i just hate baigan"
-            ]
-    
-    df = predict(vectoriser, LRmodel, text)
-    print(df.head())
-
-
     uuid_string = request.session.get('uid', None)
     userTuple = get_object_or_404(user, uid=uuid_string)
     isEnable = userSetting.objects.all ().filter (uid = uuid_string)[0].isEnable
@@ -87,6 +74,8 @@ def fullPost (request, *args, **kwargs):
     userIdTuple = user.objects.all ().filter (uid = userId)[0]
     userBatch = request.GET.get ("batch")
     userBranch = request.GET.get ("branch")
+    isEnable = userSetting.objects.all ().filter (uid = userId)[0].isEnable
+
     
 
     print ("commentContent:", request.GET.get ("commentContent"))
@@ -122,7 +111,8 @@ def fullPost (request, *args, **kwargs):
         "uid": userId,
         "commentData": commentData,
         "batch":userBatch,
-        "branch": userBranch
+        "branch": userBranch,
+        "isEnable": isEnable
     }
     allComments = comment.objects.filter (pid = postId).filter (replyId = postId)
 
@@ -137,6 +127,7 @@ def commentReply (request):
     userTuple = user.objects.all ().filter (uid = userId)[0]
     postTuple = post.objects.all ().filter (pid = postId)[0]
     commentTuple = comment.objects.all ().filter (cid = commentId)[0]
+    isEnable = userSetting.objects.all ().filter (uid = userId)[0].isEnable
 
     if request.GET.get ("replyContent") != None:
         replyContent = request.GET.get ("replyContent")
@@ -166,7 +157,10 @@ def commentReply (request):
         "pid":postId,
         "cid":commentId,
         "commentContent" : commentTuple.commentContent,
-        "replyData": replyData
+        "replyData": replyData,
+        "isEnable": isEnable,
+        "branch": userTuple.branch,
+        "batch":userTuple.batch
     }
     
     print (commentTuple.commentContent)
